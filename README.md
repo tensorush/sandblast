@@ -7,7 +7,7 @@
 
 ### :rocket: Usage
 
-```zig
+```sh
 git clone https://github.com/tensorush/sandblast.git
 cd sandblast/
 zig build exe -- -h
