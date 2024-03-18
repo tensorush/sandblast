@@ -226,6 +226,12 @@ pub fn smooth(allocator: std.mem.Allocator, in_dir_path: []const u8) !void {
                         new_line = new_line[0 .. new_line.len - 8];
                     }
 
+                    // Remove " static"
+                    while (std.mem.indexOf(u8, new_line, " static")) |idx| {
+                        std.mem.copyForwards(u8, new_line[idx..], new_line[idx + 7 ..]);
+                        new_line = new_line[0 .. new_line.len - 7];
+                    }
+
                     // Remove "'a " in "&'a " where "a" is any letter or underscore
                     for (0..MAX_NUM_MATCHES) |_| {
                         if (std.mem.indexOf(u8, new_line, "&'")) |idx| {
