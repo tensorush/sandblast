@@ -177,6 +177,35 @@ pub fn smooth(allocator: std.mem.Allocator, in_dir_path: []const u8) !void {
                         }
                     }
 
+                    // Change "enum ... {" to "const ... = enum {"
+                    if (std.mem.indexOf(u8, new_line, "enum ")) |idx| {
+                        if (new_line[new_line.len - 1] == '{') {
+                            new_line = new_line_buf[0 .. new_line.len + 8];
+                            std.mem.copyBackwards(u8, new_line[idx + 6 ..], new_line[idx + 5 .. new_line.len - 10]);
+                            @memcpy(new_line[idx .. idx + 6], "const ");
+                            @memcpy(new_line[new_line.len - 9 ..], " = enum {");
+                        }
+                    }
+
+                    // Change "union ... {" to "const ... = union {"
+                    if (std.mem.indexOf(u8, new_line, "union ")) |idx| {
+                        if (new_line[new_line.len - 1] == '{') {
+                            new_line = new_line_buf[0 .. new_line.len + 8];
+                            @memcpy(new_line[idx .. idx + 5], "const");
+                            @memcpy(new_line[new_line.len - 9 ..], "= union {");
+                        }
+                    }
+
+                    // Change "struct ... {" to "const ... = struct {"
+                    if (std.mem.indexOf(u8, new_line, "struct ")) |idx| {
+                        if (new_line[new_line.len - 1] == '{') {
+                            new_line = new_line_buf[0 .. new_line.len + 8];
+                            std.mem.copyForwards(u8, new_line[idx + 6 ..], new_line[idx + 7 ..]);
+                            @memcpy(new_line[idx .. idx + 6], "const ");
+                            @memcpy(new_line[new_line.len - 11 ..], " = struct {");
+                        }
+                    }
+
                     // Change "let mut" to "var"
                     while (std.mem.indexOf(u8, new_line, "let mut ")) |idx| {
                         std.mem.copyForwards(u8, new_line[idx + 4 ..], new_line[idx + 8 ..]);
@@ -269,6 +298,11 @@ pub fn smooth(allocator: std.mem.Allocator, in_dir_path: []const u8) !void {
                         std.mem.copyForwards(u8, new_line[idx + 1 ..], new_line[idx + 2 ..]);
                         new_line = new_line[0 .. new_line.len - 1];
                         new_line[idx] = '.';
+                    }
+
+                    // Change "None" to "null"
+                    while (std.mem.indexOf(u8, new_line, "None")) |idx| {
+                        @memcpy(new_line[idx .. idx + 4], "null");
                     }
 
                     // Remove "&" in "&self"
