@@ -10,7 +10,7 @@ pub fn smooth(allocator: std.mem.Allocator, in_dir_path: []const u8) !void {
     var in_dir = try cur_dir.openDir(in_dir_path, .{ .iterate = true });
     defer in_dir.close();
 
-    const out_dir_path = try std.fmt.allocPrint(allocator, "{s}zig-{s}", .{ std.fs.path.dirname(in_dir_path) orelse "", std.fs.path.basename(in_dir_path) });
+    const out_dir_path = try std.fmt.allocPrint(allocator, "{s}/zig-{s}", .{ std.fs.path.dirname(in_dir_path) orelse "", std.fs.path.basename(in_dir_path) });
     defer allocator.free(out_dir_path);
 
     var out_dir = try cur_dir.makeOpenPath(out_dir_path, .{});
