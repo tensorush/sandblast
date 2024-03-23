@@ -130,13 +130,6 @@ pub fn smooth(allocator: std.mem.Allocator, in_dir_path: []const u8) !void {
                         }
                     }
 
-                    // Change "loop" to "while (true)"
-                    if (std.mem.indexOf(u8, new_line, "loop ")) |idx| {
-                        new_line = new_line_buf[0 .. new_line.len + 8];
-                        std.mem.copyBackwards(u8, new_line[idx + 12 ..], new_line[idx + 4 .. new_line.len - 8]);
-                        @memcpy(new_line[idx .. idx + 12], "while (true)");
-                    }
-
                     // Change "while ... {" to "while (...) {"
                     if (std.mem.indexOf(u8, new_line, "while ")) |idx| {
                         if (new_line[new_line.len - 1] == '{' and new_line[idx + 6] != '{') {
@@ -145,6 +138,13 @@ pub fn smooth(allocator: std.mem.Allocator, in_dir_path: []const u8) !void {
                             new_line[idx + 6] = '(';
                             @memcpy(new_line[new_line.len - 3 ..], ") {");
                         }
+                    }
+
+                    // Change "loop" to "while (true)"
+                    if (std.mem.indexOf(u8, new_line, "loop ")) |idx| {
+                        new_line = new_line_buf[0 .. new_line.len + 8];
+                        std.mem.copyBackwards(u8, new_line[idx + 12 ..], new_line[idx + 4 .. new_line.len - 8]);
+                        @memcpy(new_line[idx .. idx + 12], "while (true)");
                     }
 
                     // Change "if ... {" to "if (...) {"
