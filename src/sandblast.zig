@@ -235,7 +235,7 @@ pub fn smooth(allocator: std.mem.Allocator, in_dir_path: []const u8) !void {
                     // Remove "'a " in "&'a " where "a" is any letter or underscore
                     for (0..MAX_NUM_MATCHES) |_| {
                         if (std.mem.indexOf(u8, new_line, "&'")) |idx| {
-                            if (std.ascii.isAlphabetic(new_line[idx + 2]) or new_line[idx + 2] == '_') {
+                            if (new_line[idx + 3] == ' ' and (std.ascii.isAlphabetic(new_line[idx + 2]) or new_line[idx + 2] == '_')) {
                                 std.mem.copyForwards(u8, new_line[idx + 1 ..], new_line[idx + 4 ..]);
                                 new_line = new_line[0 .. new_line.len - 3];
                             }
