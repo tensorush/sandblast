@@ -3,7 +3,7 @@ const std = @import("std");
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
-    const root_source_file = std.Build.LazyPath.relative("src/main.zig");
+    const root_source_file = b.path("src/main.zig");
     const version = std.SemanticVersion{ .major = 0, .minor = 1, .patch = 0 };
 
     // Dependencies
@@ -37,7 +37,10 @@ pub fn build(b: *std.Build) void {
     const lints_step = b.step("lints", "Run lints");
 
     const lints = b.addFmt(.{
-        .paths = &.{ "src", "build.zig" },
+        .paths = &.{
+            "src",
+            "build.zig",
+        },
         .check = true,
     });
     lints_step.dependOn(&lints.step);

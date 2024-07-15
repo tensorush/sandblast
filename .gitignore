@@ -1,2 +1,2 @@
-regex/
-zig-*/
+.zig-cache/
+zig-out/
