@@ -4,6 +4,7 @@ const MAX_LINE_LEN: usize = 1 << 11;
 const MAX_FILE_SIZE: usize = 1 << 22;
 const MAX_NUM_MATCHES: usize = 1 << 2;
 
+/// Convert Rust codebase to Zig as closely as possible based on syntax alone.
 pub fn smooth(allocator: std.mem.Allocator, in_dir_path: []const u8) !void {
     const cur_dir = std.fs.cwd();
 
@@ -352,6 +353,11 @@ pub fn smooth(allocator: std.mem.Allocator, in_dir_path: []const u8) !void {
                 }
 
                 try buf_writer.flush();
+
+                // Delete file if empty
+                if (try out_file.getEndPos() == 0) {
+                    try out_dir.deleteFile(out_file_path);
+                }
             },
             .directory => {
                 try out_dir.makePath(entry.path);
