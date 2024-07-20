@@ -3,7 +3,7 @@ const clap = @import("clap");
 const sandblast = @import("sandblast.zig");
 
 const PARAMS = clap.parseParamsComptime(
-    \\-h, --help   Display help menu.
+    \\-h, --help   Display help.
     \\<str>        Input directory path.
     \\
 );
@@ -18,11 +18,7 @@ pub fn main() !void {
     defer arena.deinit();
     const allocator = arena.allocator();
 
-    var diag = clap.Diagnostic{};
-    var res = clap.parse(clap.Help, &PARAMS, clap.parsers.default, .{ .allocator = allocator, .diagnostic = &diag }) catch |err| {
-        diag.report(std.io.getStdErr().writer(), err) catch {};
-        return err;
-    };
+    var res = try clap.parse(clap.Help, &PARAMS, clap.parsers.default, .{ .allocator = allocator });
     defer res.deinit();
 
     const input_dir_path = res.positionals[0];
